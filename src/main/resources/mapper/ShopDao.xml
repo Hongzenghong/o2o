@@ -22,8 +22,7 @@
 			<result column="area_name" property="areaName" />
 		</association>
 		<association property="shopCategory"
-			column="shop_category_id"
-			javaType="com.hzh.o2o.entity.ShopCategory">
+			column="shop_category_id" javaType="com.hzh.o2o.entity.ShopCategory">
 			<id column="shop_category_id" property="shopCategoryId" />
 			<result column="shop_category_name"
 				property="shopCategoryName" />
@@ -35,6 +34,94 @@
 		</association>
 	</resultMap>
 
+	<select id="queryShopList" resultMap="ShopMap">
+		SELECT
+			s.shop_id,
+			s.shop_name,
+			s.shop_desc,
+			s.shop_addr,
+			s.phone,
+			s.shop_img,
+			s.priority,
+			s.create_time,
+			s.last_edit_time,
+			s.enable_status,
+			s.advice,
+			a.area_id,
+			a.area_name,
+			sc.shop_category_id,
+			sc.shop_category_name
+		FROM
+			tb_shop s,
+			tb_area a,
+			tb_shop_category sc
+		<where>
+		<!-- 可输入的查询条件：
+			商铺名（要求模糊查询） 	区域Id 	商铺状态 	商铺类别 	owner -->
+		<!-- 商铺名（要求模糊查询） -->
+		<if test="shopCondition.shopName != null and '' != shopCondition.shopName">
+			and s.shop_name like '%${shopCondition.shopName}%'
+		</if>
+		<!-- 区域Id  -->
+		<if test="shopCondition.area != null and shopCondition.area.areaId != null ">
+			and s.area_id = #{shopCondition.area.areaId}
+		</if>
+		<!-- 商铺状态  -->
+		<if test="shopCondition.enableStatus !=null">
+			and s.enable_status = #{shopCondition.enableStatus}
+		</if>
+		<!-- 商铺类别  以shop_category_id来筛选-->
+		<if test="shopCondition.shopCategory != null and shopCondition.shopCategory.shopCategoryId != null ">
+			and s.shop_category_id = #{shopCondition.shopCategory.shopCategoryId}
+		</if>
+		<!-- owner  -->
+		<if test="shopCondition.owner != null and shopCondition.owner.userId != null">
+			and s.owner_id = #{shopCondition.owner.userId}
+		</if> 	
+			AND
+			s.area_id=a.area_id
+			AND
+			s.shop_category_id=sc.shop_category_id
+		</where>
+		ORDER by
+		s.priority Desc
+		LIMIT #{rowIndex},#{pageSize};
+	</select>
+	<select id="queryShopCount" resultType="int">
+	Select count(1)
+	FROM
+	tb_shop s,
+	tb_area a,
+	tb_shop_category sc
+	<where>
+		<if
+				test="shopCondition.shopCategory!=null and
+		shopCondition.shopCategory.shopCategoryId!=null">
+				and
+				s.shop_category_id=
+				#{shopCondition.shopCategory.shopCategoryId}
+			</if>
+			<if
+				test="shopCondition.area!=null and
+		shopCondition.area.areaId!=null">
+				and s.area_id=#{shopCondition.area.areaId}
+			</if>
+			<if test="shopCondition.shopName!=null">
+				and s.shop_name like '%${shopCondition.shopName}%'
+			</if>
+			<if test="shopCondition.enableStatus!=null">
+				and s.enable_status=#{shopCondition.enableStatus}
+			</if>
+			<!-- owner  -->
+		  <if test="shopCondition.owner!=null and shopCondition.owner.userId!=null">
+			and s.owner_id = #{shopCondition.owner.userId}
+		 </if> 	
+		AND
+		s.area_id=a.area_id
+		AND
+		s.shop_category_id=sc.shop_category_id
+	</where>
+	</select>
 	<!-- 通过店铺ID查询店铺信息 -->
 	<select id="queryByShopId" resultMap="ShopMap"
 		parameterType="Long">
