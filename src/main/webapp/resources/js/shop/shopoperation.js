@@ -72,7 +72,6 @@ $(function() {
 	}
 		$('#submit').click(
 				function() {
-					alert(22222222);
 					var shop = {};
 					// 如果是编辑，需要传入shopId
 					if(isEdit){

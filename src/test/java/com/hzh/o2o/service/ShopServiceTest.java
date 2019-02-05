@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.hzh.o2o.BaseTest;
+import com.hzh.o2o.dto.ImageHolder;
 import com.hzh.o2o.dto.ShopExecution;
 import com.hzh.o2o.entity.Area;
 import com.hzh.o2o.entity.PersonInfo;
@@ -44,7 +45,8 @@ public void testModifyShop()throws ShopOperationException,FileNotFoundException{
 	shop.setShopName("修改后店铺名称");
 	File shopImg=new File("D:\\eclipse-workspace2\\image\\3.jpg");
 	InputStream is=new FileInputStream(shopImg);
-	ShopExecution shopExecution=shopService.modifyShop(shop, is, "3.jpg");
+	ImageHolder imageHolder=new ImageHolder("3.jpg", is);
+	ShopExecution shopExecution=shopService.modifyShop(shop,imageHolder);
 	System.out.println("新图片地址："+shopExecution.getShop().getShopImg());
 }
 @Test
@@ -69,7 +71,8 @@ public void testAddShop() throws FileNotFoundException {
 	shop.setAdvice("审核中");
 	File shopImg=new File("D:\\eclipse-workspace2\\image\\2.jpg");
 	InputStream Is=new FileInputStream(shopImg);
-	ShopExecution se=shopService.addShop(shop, Is,shopImg.getName());
+	ImageHolder imageHolder=new ImageHolder(shopImg.getName(),Is);
+	ShopExecution se=shopService.addShop(shop, imageHolder);
 	assertEquals(ShopStateEnum.CHECK.getState(), se.getState());
 }
 }

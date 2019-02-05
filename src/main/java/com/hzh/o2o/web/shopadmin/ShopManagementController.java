@@ -22,6 +22,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hzh.o2o.dto.ImageHolder;
 import com.hzh.o2o.dto.ShopExecution;
 import com.hzh.o2o.entity.Area;
 import com.hzh.o2o.entity.PersonInfo;
@@ -204,22 +205,10 @@ public class ShopManagementController {
 		if (shop != null && shopImg != null) {
 			PersonInfo owner = (PersonInfo)request.getSession().getAttribute("user");
 			shop.setOwner(owner);
-
-			// service中传入的参数是file,方便于测试
-			// 这里的是CommonsMultiPartFile,所以我们需要将CommonsMultiPartFile转为File
-			// File shopImgFile = new File(PathUtil.getImgBasePath()+
-			// ImageUtil.getRandomFileName());
-			// try {
-			// shopImgFile.createNewFile();
-			// } catch (IOException e) {
-			// modelMap.put("success", false);
-			// modelMap.put("errMsg",e.getMessage());
-			// return modelMap;
-			// }
-			//
 			ShopExecution se;
 			try {
-				se = shopService.addShop(shop, shopImg.getInputStream(), shopImg.getOriginalFilename());
+				ImageHolder imageHolder=new ImageHolder(shopImg.getOriginalFilename(),shopImg.getInputStream());
+				se = shopService.addShop(shop, imageHolder);
 				if (se.getState() == ShopStateEnum.CHECK.getState()) {
 					modelMap.put("success", true);
 					//该用户可以操作的店铺列表
@@ -320,9 +309,10 @@ public class ShopManagementController {
 			ShopExecution se;
 			try {
 				if(shopImg == null){
-					se = shopService.modifyShop(shop,null,null);
+					se = shopService.modifyShop(shop,null);
 				}else{
-					se = shopService.modifyShop(shop, shopImg.getInputStream(),shopImg.getOriginalFilename());
+					ImageHolder imageHolder=new ImageHolder(shopImg.getOriginalFilename(),shopImg.getInputStream());
+					se = shopService.modifyShop(shop, imageHolder);
 				}
 				if(se.getState() == ShopStateEnum.SUCCESS.getState()){
 					modelMap.put("success", true);
