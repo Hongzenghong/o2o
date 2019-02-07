@@ -15,14 +15,18 @@
 		FROM
 			tb_shop_category
 	 <where>
+	 <!-- 首页查询一级类别的商铺信息 -->
+		<if test="shopCategoryCondition == null">
+			and parent_id is null
+		</if>
             <!--  parent_id不为空的，查询的是以及一级类别下的二级类别 -->
             <if test="shopCategoryCondition!=null">
                 and parent_id is not null
             </if>
             <!-- 查询指定的parent_id，也就是二级类别 下的所有店铺-->
-            <if test="shopCategoryCondition.parent!=null">
-                and parent_id=#{shopCategoryCondition.parent.shopCategoryId}
-            </if>
+            <if test="shopCategoryCondition != null and shopCategoryCondition.parent != null">
+			and parent_id = #{shopCategoryCondition.parent.shopCategoryId}
+		</if>
         </where>
 		ORDER BY priority 
 		DESC	

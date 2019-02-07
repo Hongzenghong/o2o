@@ -50,7 +50,7 @@ public void testModifyShop()throws ShopOperationException,FileNotFoundException{
 	System.out.println("新图片地址："+shopExecution.getShop().getShopImg());
 }
 @Test
-@Ignore
+
 public void testAddShop() throws FileNotFoundException {
 	Shop shop=new Shop();
 	PersonInfo owner=new PersonInfo();

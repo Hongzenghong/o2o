@@ -5,5 +5,10 @@ import java.util.List;
 import com.hzh.o2o.entity.ShopCategory;
 
 public interface ShopCategoryService {
+	/**
+	 * 根据查询条件获取shopCategory列表
+	 * @param shopCategoryCondition
+	 * @return
+	 */
 	List<ShopCategory> getShopCategoryList(ShopCategory shopCategoryCondition);
 }
