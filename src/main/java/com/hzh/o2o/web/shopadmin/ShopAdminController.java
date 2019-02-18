@@ -37,4 +37,12 @@ public class ShopAdminController {
 		//商品管理
 		return "shop/productmanagement";
 	}
+	@RequestMapping(value = "/localauthlogin", method = RequestMethod.GET)
+	public String localAuthLogin() {
+		return "shop/localauthlogin";
+	}
+	@RequestMapping(value = "/registeruser", method = RequestMethod.GET)
+	public String registeruser() {
+		return "shop/registeruser";
+	}
 }
